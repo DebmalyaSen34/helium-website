@@ -4,6 +4,7 @@ import Features from './components/Features';
 import Installation from './components/Installation';
 import Contribution from './components/Contribution';
 import './App.css';
+import { Analytics } from '@vercel/analytics/next';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Installation />
         <Contribution />
       </main>
+      <Analytics />
     </div>
   );
 }
