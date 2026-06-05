@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { FaCopy, FaCheck } from 'react-icons/fa';
 
 const CodeBlock = ({ code, description }) => {
@@ -32,6 +32,140 @@ const CodeBlock = ({ code, description }) => {
       <pre className="code-content">
         <code>{code}</code>
       </pre>
+    </div>
+  );
+};
+
+const HELIUM_ASCII = `
+ ██╗  ██╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗
+ ██║  ██║██╔════╝██║     ██║██║   ██║████╗ ████║
+ ███████║█████╗  ██║     ██║██║   ██║██╔████╔██║
+ ██╔══██║██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║
+ ██║  ██║███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║
+ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝`;
+
+const InstallerTerminal = ({ inView }) => {
+  const [lines, setLines] = useState([]);
+  const [cursorVisible, setCursorVisible] = useState(true);
+  const [showCursor, setShowCursor] = useState(true);
+  const terminalRef = useRef(null);
+  const animRef = useRef(null);
+
+  // Blinking cursor
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorVisible(prev => !prev);
+    }, 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Auto-scroll
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [lines]);
+
+  // Run animation sequence
+  const runAnimation = useCallback(async () => {
+    if (!inView) return;
+
+    const sleep = (ms) => new Promise(resolve => {
+      animRef.current = setTimeout(resolve, ms);
+    });
+
+    const addLine = (line) => {
+      setLines(prev => [...prev, line]);
+    };
+
+    try {
+      // Wait for scroll into view
+      await sleep(800);
+
+      // Command 1: pip install helium-agent
+      addLine({ type: 'cmd', text: 'pip install helium-agent' });
+      await sleep(600);
+
+      addLine({ type: 'dim', text: 'Collecting helium-agent...' });
+      await sleep(400);
+
+      addLine({ type: 'dim', text: 'Installing collected packages...' });
+      await sleep(500);
+
+      addLine({ type: 'success', text: 'Successfully installed helium-agent', icon: '✓' });
+      await sleep(800);
+
+      // Command 2: helium .
+      addLine({ type: 'cmd', text: 'helium .' });
+      await sleep(600);
+
+      addLine({ type: 'normal', text: 'Install Helium. It\'s a CLI tool.' });
+      await sleep(500);
+
+      addLine({ type: 'ascii', text: HELIUM_ASCII });
+      await sleep(700);
+
+      addLine({ type: 'success', text: 'You\'re all set!', icon: '✓' });
+      await sleep(400);
+
+      addLine({ type: 'dim', text: 'Check the docs for guides and examples.' });
+      await sleep(400);
+
+      addLine({ type: 'dim', text: 'Close this installer to get started.' });
+      await sleep(500);
+
+      addLine({ type: 'dim', text: 'Closing installer...' });
+      await sleep(500);
+
+      addLine({ type: 'accent', text: 'Done. Helium is ready.' });
+
+      // Wait then reset and loop
+      await sleep(4000);
+      setLines([]);
+      setShowCursor(true);
+
+      // Loop
+      await sleep(1000);
+      runAnimation();
+    } catch (e) {
+      // Component unmounted, do nothing
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    if (inView) {
+      runAnimation();
+    }
+    return () => {
+      if (animRef.current) {
+        clearTimeout(animRef.current);
+      }
+    };
+  }, [inView, runAnimation]);
+
+  return (
+    <div className="installer-terminal" ref={terminalRef}>
+      <div className="installer-body">
+        {lines.map((line, i) => (
+          <div key={i} className={`installer-line installer-${line.type}`}>
+            {line.type === 'cmd' && <span className="installer-prompt">~ &gt;</span>}
+            {line.icon && <span className="installer-icon">{line.icon}</span>}
+            {line.type === 'ascii' ? (
+              <pre className="installer-ascii">{line.text}</pre>
+            ) : (
+              <span>{line.text}</span>
+            )}
+          </div>
+        ))}
+
+        {/* Current cursor line */}
+        {showCursor && (
+          <div className="installer-line installer-cmd-line">
+            <span className="installer-prompt">~ &gt;</span>
+            <span className={`installer-cursor ${cursorVisible ? 'visible' : ''}`} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -71,21 +205,7 @@ const Installation = () => {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <div className="demo-header">
-              <span className="demo-dot red"></span>
-              <span className="demo-dot yellow"></span>
-              <span className="demo-dot green"></span>
-              <span className="demo-title">helium-core</span>
-            </div>
-            <pre className="demo-content">
-{`user@helium-core:~$ helium solve "refactor this api into rust"
-// Analyzing project directory...
-`}<span className="success">{`✔ Indexing 42 files`}</span>{`
-`}<span className="success">{`✔ Mapping dependencies`}</span>{`
-`}<span className="success">{`✔ Generating Rust architecture`}</span>{`
-`}<span className="highlight">{`Generated 5 modules in /src/helium_output`}</span>{`
-`}<span className="prompt">{`Apply changes? [Y/n]`}</span>
-            </pre>
+            <InstallerTerminal inView={inView} />
           </motion.div>
 
           {/* Right: Installation steps */}

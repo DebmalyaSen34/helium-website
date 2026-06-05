@@ -26,7 +26,7 @@ const Header = () => {
 
         <div className="header-actions">
           <motion.a
-            href="https://github.com/your-repo/helium"
+            href="https://github.com/DebmalyaSen34/helium-agent"
             target="_blank"
             rel="noopener noreferrer"
             className="read-docs-button"
@@ -38,7 +38,7 @@ const Header = () => {
           </motion.a>
 
           <motion.a
-            href="https://github.com/your-repo/helium"
+            href="https://github.com/DebmalyaSen34/helium-agent"
             target="_blank"
             rel="noopener noreferrer"
             className="github-button"

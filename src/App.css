@@ -888,61 +888,142 @@ main {
 }
 
 .installation-demo {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  background: linear-gradient(145deg, #111111, #0a0a0a);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.demo-header {
+/* Installer Terminal */
+.installer-terminal {
+  padding: 24px;
+  min-height: 360px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.installer-terminal::-webkit-scrollbar {
+  display: none;
+}
+
+.installer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.installer-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: installerFadeIn 0.3s ease forwards;
+  opacity: 0;
+}
+
+@keyframes installerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.installer-cmd-line {
+  margin-bottom: 8px;
+  opacity: 1;
+  animation: none;
+}
+
+.installer-prompt {
+  color: var(--accent-tertiary);
+  font-weight: 600;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.installer-cmd-text {
+  color: var(--text-heading);
+  font-weight: 500;
+}
+
+.installer-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: var(--accent-tertiary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.installer-cursor.visible {
+  opacity: 1;
+}
+
+.installer-normal {
+  color: var(--text-secondary);
+}
+
+.installer-cmd {
+  color: var(--text-heading);
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
 }
 
-.demo-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.demo-dot.red { background: #ff5f57; }
-.demo-dot.yellow { background: #febc2e; }
-.demo-dot.green { background: #28c840; }
-
-.demo-title {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-left: 8px;
-}
-
-.demo-content {
-  padding: 20px;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1.7;
+.installer-cmd .installer-prompt {
   color: var(--accent-tertiary);
+  font-weight: 600;
 }
 
-.demo-content .prompt {
-  color: var(--accent);
-}
-
-.demo-content .output {
-  color: var(--text-secondary);
-}
-
-.demo-content .success {
+.installer-success {
   color: var(--accent-tertiary);
+  font-weight: 500;
 }
 
-.demo-content .highlight {
+.installer-success .installer-icon {
+  color: var(--accent-tertiary);
+  font-weight: 700;
+}
+
+.installer-dim {
+  color: rgba(132, 148, 149, 0.7);
+  font-size: 0.78rem;
+}
+
+.installer-accent {
   color: var(--accent);
+  font-weight: 500;
+}
+
+.installer-icon {
+  flex-shrink: 0;
+  font-size: 0.9em;
+}
+
+.installer-ascii {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  line-height: 1.15;
+  color: var(--accent);
+  margin: 8px 0;
+  white-space: pre;
+  opacity: 0.85;
+  text-shadow: 0 0 20px var(--accent-glow);
+  letter-spacing: 0;
 }
 
 .installation-steps {
@@ -1103,36 +1184,6 @@ main {
   margin: 0 auto;
 }
 
-.contribution-stats {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  margin-bottom: 48px;
-}
-
-.contribution-stat {
-  text-align: center;
-}
-
-.contribution-stat .stat-number {
-  font-family: var(--font-sans);
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent);
-  display: block;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.contribution-stat .stat-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-}
-
 .contribution-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
@@ -1163,34 +1214,6 @@ main {
   font-size: 0.95rem;
   margin-bottom: 24px;
   color: var(--text-secondary);
-}
-
-.contribution-cta {
-  text-align: center;
-}
-
-.github-large-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 32px;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all var(--transition-normal);
-}
-
-.github-large-button:hover {
-  background: var(--accent);
-  color: var(--bg-primary);
-  box-shadow: 0 0 16px var(--accent-glow);
-  transform: translateY(-2px);
 }
 
 /* ==================== FOOTER ==================== */
@@ -1365,11 +1388,6 @@ main {
     flex-direction: column;
     align-items: center;
     text-align: center;
-  }
-
-  .contribution-stats {
-    flex-direction: column;
-    gap: 24px;
   }
 
   .footer-main {

@@ -14,7 +14,7 @@ const Footer = () => {
             <a href="#installation">API</a>
             <a href="#contribute">Status</a>
             <a
-              href="https://github.com/your-repo/helium"
+              href="https://github.com/DebmalyaSen34/helium-agent"
               target="_blank"
               rel="noopener noreferrer"
             >

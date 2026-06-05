@@ -4,12 +4,12 @@ import { AutonomyAtom } from './AutonomyAtom';
 
 const heroFeatures = [
   {
-    title: 'Lightning Fast Fusion',
+    title: 'Run Any Model',
     description:
-      'Engineered for sub-millisecond response times. Helium leverages edge-computing clusters to process complex reasoning chains at the speed of thought.',
+      'Tested heavily on local models like Gemma 4 and Nemotron using llama.cpp. Use any inference engine — vLLM, llama.cpp, or any cloud endpoint.',
     terminal: {
-      prompt: '> latency --measure',
-      result: '[RESULTS]: 0.002ms | STATUS: PEAK',
+      prompt: '> helium models --list',
+      result: '[LOADED]: gemma4:nemotron | ENGINE: llama.cpp',
     },
   },
   {
@@ -19,9 +19,9 @@ const heroFeatures = [
     terminal: null,
   },
   {
-    title: 'Advanced AI Reasoning',
+    title: 'Lightweight',
     description:
-      'Multimodal logic cores designed for autonomous problem-solving. From legacy stack migration to zero-day security audits, Helium reasons through complexity.',
+      'No unnecessary plugins or extensions. Customize to your needs — Helium ships lean and adapts to your workflow.',
     terminal: null,
   },
 ];
