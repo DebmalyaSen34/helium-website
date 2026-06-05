@@ -3,7 +3,6 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Installation from './components/Installation';
 import Contribution from './components/Contribution';
-import Footer from './components/Footer';
 import './App.css';
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
         <Installation />
         <Contribution />
       </main>
-      <Footer />
     </div>
   );
 }

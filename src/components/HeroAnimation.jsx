@@ -7,9 +7,9 @@ const generateBlastParticles = (count = 80) => {
   const particles = [];
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-    const velocity = 250 + Math.random() * 500;
+    const velocity = 400 + Math.random() * 800;
     const size = 1.5 + Math.random() * 3;
-    const lifetime = 1500 + Math.random() * 2500;
+    const lifetime = 2000 + Math.random() * 3000;
     particles.push({
       id: i,
       angle,
@@ -55,12 +55,14 @@ const HeroAnimation = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
+    // Use viewport dimensions for full coverage
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = height * window.devicePixelRatio;
 
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+    const cx = width / 2;
+    const cy = height / 2;
 
     // Create blast particles
     const blastParticles = BLAST_PARTICLES.map((p) => {
@@ -83,8 +85,8 @@ const HeroAnimation = () => {
 
     // Create ambient floating particles — tiny background protons with random flashes
     const ambientParticles = Array.from({ length: 45 }, (_, i) => ({
-      x: Math.random() * rect.width,
-      y: Math.random() * rect.height,
+      x: Math.random() * width,
+      y: Math.random() * height,
       vx: (Math.random() - 0.5) * 12,
       vy: (Math.random() - 0.5) * 12,
       size: 1 + Math.random() * 2,
@@ -132,7 +134,7 @@ const HeroAnimation = () => {
           if (progress > 1) return;
 
           // Minimal deceleration — particles fly hard
-          const friction = 0.995;
+          const friction = 0.998;
           p.vx *= friction;
           p.vy *= friction;
           p.x += p.vx * 0.016;
@@ -252,9 +254,8 @@ const HeroAnimation = () => {
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
     };
 
     window.addEventListener('resize', handleResize);
@@ -265,15 +266,17 @@ const HeroAnimation = () => {
 
   return (
     <div className="hero-animation">
-      {/* Persistent particle canvas */}
+      {/* Persistent particle canvas - covers full hero section */}
       <canvas
         ref={canvasRef}
         className="hero-particle-canvas"
         style={{
           position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '100vw',
+          height: '100vh',
           pointerEvents: 'none',
           zIndex: 1,
         }}
@@ -289,8 +292,8 @@ const HeroAnimation = () => {
               phase === 'idle'
                 ? { x: '-60vw', opacity: 0 }
                 : phase === 'approach'
-                ? { x: '-6%', opacity: 1 }
-                : { x: '0%', opacity: 0, scale: 0.2 }
+                  ? { x: '-6%', opacity: 1 }
+                  : { x: '0%', opacity: 0, scale: 0.2 }
             }
             exit={{ opacity: 0, scale: 0 }}
             transition={
@@ -315,8 +318,8 @@ const HeroAnimation = () => {
               phase === 'idle'
                 ? { x: '60vw', opacity: 0 }
                 : phase === 'approach'
-                ? { x: '6%', opacity: 1 }
-                : { x: '0%', opacity: 0, scale: 0.2 }
+                  ? { x: '6%', opacity: 1 }
+                  : { x: '0%', opacity: 0, scale: 0.2 }
             }
             exit={{ opacity: 0, scale: 0 }}
             transition={
@@ -362,7 +365,7 @@ const HeroAnimation = () => {
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
             <h1 className="hero-title">Helium Agent</h1>
-            <p className="hero-subtitle">Your Terminal AI Companion</p>
+            <p className="hero-subtitle">Light Local AI Agent</p>
           </motion.div>
         )}
       </AnimatePresence>

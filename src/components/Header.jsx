@@ -29,18 +29,6 @@ const Header = () => {
             href="https://github.com/DebmalyaSen34/helium-agent"
             target="_blank"
             rel="noopener noreferrer"
-            className="read-docs-button"
-            whileHover={{ scale: 1.05, boxShadow: '0 0 12px rgba(0, 242, 255, 0.3)' }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaBook size={14} />
-            <span>Read Docs</span>
-          </motion.a>
-
-          <motion.a
-            href="https://github.com/DebmalyaSen34/helium-agent"
-            target="_blank"
-            rel="noopener noreferrer"
             className="github-button"
             whileHover={{ scale: 1.05, boxShadow: '0 0 12px rgba(0, 242, 255, 0.3)' }}
             whileTap={{ scale: 0.95 }}

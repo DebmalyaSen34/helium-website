@@ -9,7 +9,7 @@ const heroFeatures = [
       'Tested heavily on local models like Gemma 4 and Nemotron using llama.cpp. Use any inference engine — vLLM, llama.cpp, or any cloud endpoint.',
     terminal: {
       prompt: '> helium models --list',
-      result: '[LOADED]: gemma4:nemotron | ENGINE: llama.cpp',
+      result: '[LOADED]: gemma4 | ENGINE: llama.cpp',
     },
   },
   {
