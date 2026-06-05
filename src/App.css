@@ -186,73 +186,21 @@ main {
 }
 
 /* Helium Atom */
-.helium-atom {
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Interactive 3D Atom Wrapper Hover transitions */
+.hero-3d-atom-wrapper {
+  width: 320px;
+  height: 320px;
+  max-width: 100vw;
+  max-height: 100vw;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.helium-nucleus {
-  position: relative;
-  z-index: 2;
+.hero-3d-atom-wrapper.hovered {
+  transform: scale(1.05);
 }
 
-.nucleus-core {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #b0f0ff, var(--accent), #0090d0);
-  box-shadow:
-    0 0 30px rgba(0, 242, 255, 0.6),
-    0 0 80px rgba(0, 242, 255, 0.3),
-    0 0 140px rgba(0, 242, 255, 0.15);
-}
-
-.nucleus-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 242, 255, 0.15) 0%, transparent 70%);
-  animation: protonPulse 2s ease-in-out infinite;
-}
-
-/* Electron orbit — single shared orbit ring */
-.electron-orbit-ring {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  border: 1px solid rgba(200, 176, 64, 0.15);
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.electron {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c8b040;
-  box-shadow:
-    0 0 8px rgba(200, 176, 64, 0.7),
-    0 0 18px rgba(200, 176, 64, 0.3);
-}
-
-.electron-1 {
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.electron-2 {
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+.hero-3d-atom-wrapper.grabbed {
+  transform: scale(1.02);
 }
 
 /* Hero Text */
@@ -1390,24 +1338,9 @@ main {
     height: 48px;
   }
 
-  .nucleus-core {
-    width: 44px;
-    height: 44px;
-  }
-
-  .nucleus-glow {
-    width: 80px;
-    height: 80px;
-  }
-
-  .electron-orbit-ring {
-    width: 120px;
-    height: 120px;
-  }
-
-  .electron {
-    width: 8px;
-    height: 8px;
+  .hero-3d-atom-wrapper {
+    width: 250px;
+    height: 250px;
   }
 
   .hero-text {

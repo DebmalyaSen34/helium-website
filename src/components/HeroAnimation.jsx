@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Interactive3DAtom from './Interactive3DAtom';
 
 // Generate particles for the blast — tight, fast, heavy
 const generateBlastParticles = (count = 80) => {
@@ -336,7 +337,6 @@ const HeroAnimation = () => {
       <AnimatePresence>
         {phase === 'merged' && (
           <motion.div
-            className="helium-atom"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{
@@ -345,23 +345,9 @@ const HeroAnimation = () => {
               damping: 18,
               delay: 0.1,
             }}
+            style={{ zIndex: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
-            <div className="helium-nucleus">
-              <div className="nucleus-core" />
-              <div className="nucleus-glow" />
-            </div>
-            <motion.div
-              className="electron-orbit-ring"
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-            >
-              <div className="electron electron-1" />
-              <div className="electron electron-2" />
-            </motion.div>
+            <Interactive3DAtom />
           </motion.div>
         )}
       </AnimatePresence>
