@@ -4,7 +4,7 @@ import Features from './components/Features';
 import Installation from './components/Installation';
 import Contribution from './components/Contribution';
 import './App.css';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
