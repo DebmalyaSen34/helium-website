@@ -1,0 +1,164 @@
+:root {
+  /* Colors - Helium Terminal-Plus dark theme */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #131313;
+  --bg-card: rgba(26, 26, 26, 0.7);
+  --bg-card-solid: #1a1a1a;
+  --bg-code: #0e0e0e;
+
+  --text-primary: #e5e2e1;
+  --text-secondary: #849495;
+  --text-heading: #ffffff;
+
+  --accent: #00f2ff;
+  --accent-glow: rgba(0, 242, 255, 0.3);
+  --accent-soft: rgba(0, 242, 255, 0.1);
+  --accent-secondary: #ff5e07;
+  --accent-secondary-glow: rgba(255, 94, 7, 0.3);
+  --accent-tertiary: #00fa99;
+  --accent-tertiary-glow: rgba(0, 250, 153, 0.3);
+
+  --border: rgba(0, 242, 255, 0.12);
+  --border-hover: rgba(0, 242, 255, 0.3);
+  --border-glow: rgba(0, 242, 255, 0.4);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Spacing */
+  --section-padding: 100px 0;
+  --container-width: 1440px;
+  --container-padding: 0 32px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Global Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-heading);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: #4dd8ff;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-heading);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4dd8ff;
+}
+
+/* Utility Classes */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: var(--container-padding);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-title {
+  margin-bottom: 16px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 60px 0;
+  }
+
+  body {
+    font-size: 15px;
+  }
+}
