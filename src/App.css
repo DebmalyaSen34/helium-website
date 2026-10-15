@@ -663,20 +663,7 @@ main {
   opacity: 0.03;
 }
 
-.inner-line-path {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 4;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
 
-.inner-line-path.active {
-  opacity: 0.6;
-  animation: connectionLineFlowReverse 12s linear infinite;
-  filter: drop-shadow(0 0 3px var(--accent-glow));
-}
 
 @keyframes connectionLineFlow {
   to {
@@ -684,11 +671,6 @@ main {
   }
 }
 
-@keyframes connectionLineFlowReverse {
-  to {
-    stroke-dashoffset: 1000;
-  }
-}
 
 .autonomy-interactive-grid {
   display: grid;
@@ -742,27 +724,8 @@ main {
   opacity: 1;
 }
 
-.card-shell-tag {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  color: rgba(200, 176, 64, 0.55);
-  border: 1px solid rgba(200, 176, 64, 0.2);
-  padding: 2px 6px;
-  white-space: nowrap;
-  transition: all 0.3s;
-}
 
-.autonomy-feature-card.active .card-shell-tag {
-  color: #ffd700;
-  border-color: rgba(255, 215, 0, 0.6);
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-}
 
-.autonomy-feature-card.pinned .card-shell-tag::after {
-  content: ' ◉';
-}
 
 .autonomy-feature-card::before {
   content: '';
@@ -838,14 +801,14 @@ main {
 
 .autonomy-atom-column {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   position: relative;
   width: 100%;
   min-width: 0;
 }
 
-/* The atom scales with its column; everything inside is sized in % or viewBox units */
+/* The canvas scales with its column; the simulation runs in a fixed 400-unit space */
 .atom-visualizer-container {
   position: relative;
   width: 100%;
@@ -853,245 +816,41 @@ main {
   aspect-ratio: 1;
 }
 
-.atom-layer {
+.atom-cloud-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
-  pointer-events: none;
+  display: block;
 }
 
-.atom-layer-back { z-index: 1; }
-.atom-layer-front { z-index: 3; }
-
-.atom-cloud {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: cloudBreathe 5s ease-in-out infinite;
+.atom-caption {
+  min-height: 1.4em;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-align: center;
 }
 
-.atom-visualizer-container.has-active .atom-cloud {
-  animation-duration: 1.8s;
+.atom-caption > span {
+  display: inline-block;
 }
 
-@keyframes cloudBreathe {
-  0%, 100% { transform: scale(0.94); opacity: 0.8; }
-  50% { transform: scale(1.06); opacity: 1; }
+.atom-caption-dim {
+  color: var(--text-secondary);
 }
 
-.atom-range {
-  fill: none;
-  stroke: rgba(0, 242, 255, 0.06);
-  stroke-width: 1;
-  stroke-dasharray: 2 6;
-}
-
-/* Orbits: the far half is faint, the near half brighter, so the rings read as 3D */
-.orbit-ring {
-  fill: none;
-  stroke: rgb(200, 176, 64);
-  stroke-width: 1;
-  stroke-linecap: round;
-  transition: stroke 0.4s, stroke-width 0.4s, opacity 0.4s;
-}
-
-.orbit-ring.back { opacity: 0.16; }
-.orbit-ring.front { opacity: 0.42; }
-
-.orbit-ring.active {
-  stroke: #ffd700;
-  stroke-width: 1.6;
-}
-
-.orbit-ring.back.active { opacity: 0.45; }
-.orbit-ring.front.active {
-  opacity: 0.95;
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
-}
-
-.orbit-ring.dim { opacity: 0.06; }
-
-.electron-trail {
-  fill: none;
-  stroke: #ffd24a;
-  stroke-linecap: round;
-  opacity: 0.14;
-  transition: opacity 0.4s, stroke 0.4s;
-}
-
-.electron-trail.active {
-  stroke: #fff2a8;
-  opacity: 0.35;
-}
-
-.electron-trail.dim { opacity: 0.03; }
-
-/* Electrons */
-.electron {
-  cursor: pointer;
-  opacity: calc(0.5 + var(--depth, 1) * 0.5);
-  transition: opacity 0.3s;
-}
-
-.electron-hit {
-  fill: transparent;
-  pointer-events: all;
-}
-
-.electron-halo {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: electronPulse 1.8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.electron-body {
-  pointer-events: none;
-  transition: transform 0.3s;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.electron-lock {
-  fill: none;
-  stroke: #ffd700;
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-  opacity: 0;
-  pointer-events: none;
-  transform-box: fill-box;
-  transform-origin: center;
-  transition: opacity 0.3s;
-}
-
-.electron:hover .electron-body,
-.electron.active .electron-body {
-  transform: scale(1.35);
-}
-
-.electron.active .electron-lock {
-  opacity: 1;
-  animation: lockRing 3s linear infinite;
-}
-
-.electron.dim { opacity: 0.22; }
-
-@keyframes lockRing {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes electronPulse {
-  0%, 100% { transform: scale(0.85); opacity: 0.7; }
-  50% { transform: scale(1.2); opacity: 1; }
-}
-
-/* Central nucleus */
-.atom-nucleus {
+.atom-icon-sources {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 17%;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  padding: 0;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.12), rgba(12, 21, 24, 0.85) 70%);
-  border: 1px solid rgba(0, 242, 255, 0.18);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
-  box-shadow: 0 0 24px rgba(0, 242, 255, 0.08);
-}
-
-.atom-nucleus:hover {
-  border-color: var(--border-glow);
-  box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
-}
-
-.atom-nucleus:focus-visible {
-  outline: 1px dashed var(--accent);
-  outline-offset: 6px;
-}
-
-.atom-nucleus.nucleus-active {
-  border-color: var(--accent);
-  background: radial-gradient(circle at 35% 35%, #ffffff, var(--accent) 45%, #006699);
-  box-shadow: 0 0 35px var(--accent-glow), inset 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-.nucleus-glow-ring {
-  position: absolute;
-  inset: -30%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 242, 255, 0.12) 0%, transparent 65%);
-  animation: nucleusPulse 2.5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.nucleus-particles {
-  width: 78%;
-  height: 78%;
-  overflow: visible;
-  filter: drop-shadow(0 0 4px rgba(0, 242, 255, 0.35));
-  transition: opacity 0.25s, transform 0.25s;
-}
-
-.nucleus-particles.hidden {
-  opacity: 0;
-  transform: scale(0.6);
-}
-
-.nucleus-active-state {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.active-nucleus-icon {
-  color: var(--bg-primary);
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
-}
-
-.nucleus-shockwave {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
-  pointer-events: none;
-  animation: shockwave 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.nucleus-shockwave.surge {
-  border-color: #ffd700;
-  animation-duration: 1.3s;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-}
-
-@keyframes shockwave {
-  from { transform: scale(1); opacity: 0.9; }
-  to { transform: scale(5.5); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .atom-cloud,
-  .electron-halo,
-  .electron.active .electron-lock,
-  .nucleus-glow-ring { animation: none; }
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
 /* CSS Keyframes */
-@keyframes nucleusPulse {
-  0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.15); opacity: 0.7; }
-}
 
 /* ==================== INSTALLATION ==================== */
 .installation-section {
