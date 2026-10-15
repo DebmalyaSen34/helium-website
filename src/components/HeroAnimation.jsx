@@ -84,7 +84,7 @@ const HeroAnimation = () => {
     });
 
     // Create ambient floating particles — tiny background protons with random flashes
-    const ambientParticles = Array.from({ length: 45 }, (_, i) => ({
+    const ambientParticles = Array.from({ length: 45 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 12,
@@ -116,6 +116,38 @@ const HeroAnimation = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio;
+
+    // Photons emitted by the atom ripple outward as a wavefront that tints the ambient particles
+    const onPhoton = (ev) => {
+      const { rgb, ionize } = ev.detail;
+      const rect = canvas.getBoundingClientRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const now = performance.now();
+      particlesRef.current.forEach((p) => {
+        if (p.type !== 'ambient' || (!ionize && Math.random() > 0.55)) return;
+        const dist = Math.hypot(p.x - cx, p.y - cy);
+        p.isFlashing = true;
+        p.flashStart = now + dist * 0.9;
+        p.tint = rgb;
+        p.flashPeak = ionize ? 1.4 : 0.9;
+        if (ionize) {
+          const a = Math.atan2(p.y - cy, p.x - cx);
+          p.vx += Math.cos(a) * 60;
+          p.vy += Math.sin(a) * 60;
+        }
+      });
+    };
+    window.addEventListener('helium:photon', onPhoton);
+
+    // Particles shy away from the cursor
+    const mouse = { x: -9999, y: -9999 };
+    const onMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    window.addEventListener('pointermove', onMove);
 
     const animate = () => {
       const now = performance.now();
@@ -183,8 +215,20 @@ const HeroAnimation = () => {
           // Gentle velocity drift
           p.vx += (Math.random() - 0.5) * 0.2;
           p.vy += (Math.random() - 0.5) * 0.2;
-          p.vx *= 0.999;
-          p.vy *= 0.999;
+
+          const mdx = p.x - mouse.x;
+          const mdy = p.y - mouse.y;
+          const md = Math.hypot(mdx, mdy);
+          if (md < 140 && md > 0.1) {
+            const push = (1 - md / 140) * 9;
+            p.vx += (mdx / md) * push;
+            p.vy += (mdy / md) * push;
+          }
+          // Bleed off any extra speed from shocks and cursor pushes
+          const speed = Math.hypot(p.vx, p.vy);
+          const damp = speed > 10 ? 0.96 : 0.999;
+          p.vx *= damp;
+          p.vy *= damp;
 
           // Base pulse
           const pulse = 0.5 + 0.5 * Math.sin(age * 0.001 + p.x * 0.01);
@@ -200,13 +244,15 @@ const HeroAnimation = () => {
             }
           }
 
-          if (p.isFlashing) {
+          if (p.isFlashing && now >= p.flashStart) {
             const flashAge = now - p.flashStart;
             const flashProgress = flashAge / p.flashDuration;
 
             if (flashProgress >= 1) {
               // Flash done — reset timer
               p.isFlashing = false;
+              p.tint = null;
+              p.flashPeak = 0.5 + Math.random() * 0.5;
               p.flashCountdown = p.flashTimer + Math.random() * 4000;
             } else {
               // Bell curve: ramp up, peak, ramp down
@@ -216,15 +262,18 @@ const HeroAnimation = () => {
 
               // Also grow slightly during flash
               const flashSize = p.size * (1 + flashCurve * 0.8);
+              const [tr, tg, tb] = p.tint || [200, 175, 60];
               ctx.beginPath();
               ctx.arc(p.x * dpr, p.y * dpr, flashSize * dpr, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(200, 175, 60, ${alpha})`;
+              ctx.fillStyle = `rgba(${tr}, ${tg}, ${tb}, ${p.tint ? Math.min(1, alpha * 2.5) : alpha})`;
               ctx.fill();
               // Bright core during peak
               if (flashCurve > 0.5) {
                 ctx.beginPath();
                 ctx.arc(p.x * dpr, p.y * dpr, (flashSize * 0.4) * dpr, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 240, 150, ${alpha * flashCurve})`;
+                ctx.fillStyle = p.tint
+                  ? `rgba(255, 255, 255, ${alpha * flashCurve})`
+                  : `rgba(255, 240, 150, ${alpha * flashCurve})`;
                 ctx.fill();
               }
               return; // already drew
@@ -246,6 +295,8 @@ const HeroAnimation = () => {
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      window.removeEventListener('helium:photon', onPhoton);
+      window.removeEventListener('pointermove', onMove);
     };
   }, [showParticles, initParticles]);
 
@@ -261,8 +312,6 @@ const HeroAnimation = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const isApproaching = phase === 'approach' || phase === 'collision';
 
   return (
     <div className="hero-animation">
